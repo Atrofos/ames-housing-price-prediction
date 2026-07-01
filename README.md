@@ -100,7 +100,7 @@ the comparison:
 
 ```
 ├── notebooks/
-│   └── eda.ipynb                  # exploratory analysis (the "show your work")
+│   └── eda.ipynb                  # exploratory analysis
 ├── data/
 │   ├── raw/AmesHousing.csv        # the input dataset
 │   └── processed/                 # cleaned + featured data (generated)
