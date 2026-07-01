@@ -1,0 +1,14 @@
+# Core pipeline (data_cleaning, feature_selection, model_training, predict)
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+xgboost>=2.0
+joblib>=1.3
+
+# EDA notebook + comparison charts
+matplotlib>=3.7
+jupyter>=1.0
+
+# Optional: the TabPFN foundation-model track
+# (large download, benefits from a CUDA GPU; not needed for the core pipeline)
+# tabpfn>=2.0
