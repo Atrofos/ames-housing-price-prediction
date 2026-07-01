@@ -6,6 +6,10 @@ training and comparison, prediction with uncertainty intervals, and a
 head-to-head study of a traditional model against a modern tabular foundation
 model.
 
+This EDA focuses on the highest-signal features and the decisions they drive; a fuller analysis 
+would extend to the remaining categorical features, 
+feature interactions, and temporal effects across the 2008 downturn
+
 ## Headline result
 
 A **zero-tuning tabular foundation model (TabPFN) outperformed a fully
