@@ -1,7 +1,6 @@
 # Generated pipeline outputs (all reproducible by running run.py)
 data/processed/
 models/
-analysis/
 data/test/
 AmesHousing_test.csv
 *.pkl
