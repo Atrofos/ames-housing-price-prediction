@@ -153,7 +153,7 @@ modern alternative to the classic Boston Housing dataset.
 ## Notes
 
 - TabPFN's model weights are released under a non-commercial licence, which is
-  fine for a personal portfolio but worth being aware of.
+  fine for a personal project but worth being aware of.
 - The synthetic test set (`generate_test_data.py`) is used only to *probe model
   behaviour* on deliberate outliers and controlled experiments. It is never used
   for training or for the reported accuracy metrics, which come only from the
