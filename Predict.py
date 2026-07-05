@@ -7,7 +7,7 @@ format as AmesHousing.csv and producing predicted sale prices.
 The central concern of any inference script is TRAINING-SERVING SKEW: if
 new data is transformed even slightly differently from how the training
 data was transformed, the model receives inputs that don't mean what it
-learned, and predictions silently degrade — no error, just wrong numbers.
+learned, and predictions silently degrade with no error, just wrong numbers.
 
 Two design choices defend against that:
 

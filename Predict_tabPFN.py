@@ -5,8 +5,8 @@ Inference for the TabPFN (foundation model) side of the project — the
 parallel of predict.py, for the parallel of model.py.
 
 Design: this file deliberately owns almost NO logic of its own. Every
-transformation step — cleaning, feature engineering, column alignment to
-the model, target inversion, output building — is imported directly from
+transformation step: cleaning, feature engineering, column alignment to
+the model, target inversion, output building is imported directly from
 predict.py and reused unchanged. The only things that genuinely differ
 between predicting with the traditional model and the TabPFN model are:
 
