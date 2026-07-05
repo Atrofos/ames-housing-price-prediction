@@ -6,10 +6,6 @@ training and comparison, prediction with uncertainty intervals, and a
 head-to-head study of a traditional model against a modern tabular foundation
 model.
 
-This EDA focuses on the highest-signal features and the decisions they drive; a fuller analysis 
-would extend to the remaining categorical features, 
-feature interactions, and temporal effects across the 2008 downturn.
-
 ## Headline result
 
 A **zero-tuning tabular foundation model (TabPFN) outperformed a fully
@@ -84,6 +80,21 @@ neighbourhood more.
 
 ![Feature values](analysis/test_feature_values.png)
 
+## Model interpretability (SHAP)
+
+To go beyond "what does the model predict" to "why", the trained XGBoost model is
+explained with SHAP. The summary below ranks features by how much they move
+predictions, and shows the direction of each effect (red means a high feature
+value, blue means low).
+
+![SHAP summary](analysis/shap_summary_beeswarm.png)
+
+The engineered `TotalSF` feature comes out as the single most important predictor,
+just ahead of `Overall Qual`, which is direct evidence that combining the basement
+and floor areas into one feature was worthwhile. SHAP can also explain any single
+prediction, breaking the price down into the contribution of each feature, which
+is how you would justify a specific valuation to someone who asks.
+
 ## Prediction intervals
 
 Predictions come with a 90% interval, not just a point estimate, so the model can
@@ -100,16 +111,59 @@ the comparison:
 - **TabPFN** produces the entire predictive distribution from a single forward
   pass, and the quantiles are read straight off it.
 
+## Results and findings
+
+The main takeaways from the project, in one place:
+
+**A zero-tuning foundation model beat a fully-tuned gradient booster.** TabPFN
+reached $20,806 RMSE on the held-out test set against XGBoost's $22,869, roughly
+9% lower error, with no hyperparameter search at all. This is consistent with
+TabPFN's known strength on small tabular datasets.
+
+**The traditional models still show the full workflow.** Linear regression
+(~$31,700 RMSE) improves through regularisation, then Random Forest ($25,465),
+then tuned XGBoost ($22,869), a clean demonstration of where each modelling step
+adds value. The biggest single jump is from linear models to trees, which is the
+non-linearity payoff.
+
+**The two models agree strongly but diverge in a revealing way.** Their
+predictions correlate at about 0.96, so they mostly see the data the same way.
+Where they part company is on the deliberate outliers: on a mansion-with-a-pool
+far outside the training range, XGBoost predicted about $404k while TabPFN
+predicted about $555k against a true price of $620k. TabPFN extrapolates more
+gracefully beyond the data it has seen, which is a genuine difference between the
+two model families.
+
+**Both models weight features differently.** The controlled pair experiments show
+both agree on direction (a fireplace, a bathroom, and central air all add value)
+but not on magnitude: XGBoost values an overall quality bump most, while TabPFN
+places more weight on a finished basement and a nicer neighbourhood.
+
+**The prediction intervals are well-calibrated.** On real data, 89% of actual
+prices fell inside the 90% interval, close to the ideal. The intervals also widen
+for unusual houses, so the model signals its own uncertainty rather than giving a
+falsely confident single number.
+
+**SHAP confirms and deepens the EDA.** The features the exploratory analysis
+flagged (quality and size) are the ones the model actually relies on most, and the
+engineered `TotalSF` lands at the very top, validating the feature engineering.
+
+**Scope note.** The exploratory analysis focuses on the highest-signal features and
+the decisions they drive. A fuller analysis would extend to the remaining
+categorical features, feature interactions, and the effect of the 2008 downturn
+across the 2006 to 2010 sale years.
+
 ## Project structure
 
 ```
 ├── notebooks/
-│   └── eda.ipynb                  # exploratory analysis
+│   ├── eda.ipynb                  # exploratory analysis (the "show your work")
+│   └── shap_analysis.ipynb        # interactive model interpretability
 ├── data/
 │   ├── raw/AmesHousing.csv        # the input dataset
 │   └── processed/                 # cleaned + featured data (generated)
 ├── models/                        # saved models + results (generated)
-├── analysis/                      # comparison charts (generated)
+├── analysis/                      # charts (generated)
 │
 ├── data_cleaning.py               # null handling, type fixes
 ├── feature_selection.py           # feature engineering + encoding
@@ -119,6 +173,7 @@ the comparison:
 ├── predict_tabpfn.py              # inference, TabPFN
 ├── generate_test_data.py          # synthetic test houses for probing
 ├── compare_predictions.py         # head-to-head analysis + charts
+├── explain_model.py               # SHAP interpretability + charts
 └── run.py                         # runs the whole pipeline end to end
 ```
 
@@ -150,14 +205,14 @@ python model_training.py      # just training + comparison
 ## Dataset
 
 The [Ames Housing dataset](http://jse.amstat.org/v19n3/decock.pdf) describes
-2,930 residential property sales in Ames, Iowa (2006–2010), with 79 explanatory
+2,930 residential property sales in Ames, Iowa (2006 to 2010), with 79 explanatory
 features covering size, quality, location, age, and more. It is a richer, more
 modern alternative to the classic Boston Housing dataset.
 
 ## Notes
 
 - TabPFN's model weights are released under a non-commercial licence, which is
-  fine for a personal project but worth being aware of.
+  fine for a personal portfolio but worth being aware of.
 - The synthetic test set (`generate_test_data.py`) is used only to *probe model
   behaviour* on deliberate outliers and controlled experiments. It is never used
   for training or for the reported accuracy metrics, which come only from the

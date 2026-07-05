@@ -4,7 +4,7 @@ run.py
 Pipeline orchestrator. Runs the full pipeline end to end in order, so you
 don't have to cycle through each file manually or pass console flags.
 
-    data_cleaning  ->  feature_selection  ->  model_training  ->  predict
+    data_cleaning  ->  features  ->  model  ->  predict
 
 Optional stages are controlled by the toggles below.
 
@@ -27,6 +27,11 @@ Optional stages are controlled by the toggles below.
                    matplotlib; reads whatever prediction CSVs exist, so it
                    degrades gracefully if only one model ran.
 
+  RUN_EXPLAIN    — SHAP interpretability on the trained XGBoost model: global
+                   feature importance, local per-house explanations, and a
+                   dependence plot, saved to ./analysis/. Needs `pip install
+                   shap`; skipped gracefully if not installed.
+
 Output files are kept SEPARATE so nothing gets overwritten:
   - the raw-data demo prediction -> predictions_demo.csv
   - the synthetic test prediction -> predictions_test.csv
@@ -35,6 +40,9 @@ Output files are kept SEPARATE so nothing gets overwritten:
 Each stage's own run() does its own loading/saving/validation; this file
 just calls them in sequence with a banner between stages.
 
+Note: the imports below match the project's snake_case filenames
+(feature_selection.py, model_training.py, etc.). If you rename any file,
+update the matching import here.
 
 Usage:
     python run.py
@@ -49,9 +57,10 @@ import predict
 
 
 # --- Optional stage toggles -------------------------------------------------
-RUN_TABPFN = True         # also run the TabPFN track (needs `pip install tabpfn`)
+RUN_TABPFN = False         # also run the TabPFN track (needs `pip install tabpfn`)
 RUN_TEST_DATA = True       # generate + score the synthetic test houses
 RUN_COMPARISON = True      # final head-to-head analysis + charts (needs matplotlib)
+RUN_EXPLAIN = True         # SHAP model interpretability + charts (needs `pip install shap`)
 TEST_HOUSE_COUNT = 50      # approximate number of synthetic houses to generate
 
 # --- Output paths (kept separate so demo and test never overwrite) ----------
@@ -133,6 +142,18 @@ def run():
         except ImportError as e:
             banner(f"Comparison skipped — {e} "
                    "(needs matplotlib: `pip install matplotlib`).")
+
+    if RUN_EXPLAIN:
+        # SHAP interpretability on the trained XGBoost model. Needs the model
+        # to exist (it does by now) and the `shap` package. Wrapped so a missing
+        # shap install doesn't break the rest of the pipeline.
+        try:
+            import explain_model
+            banner("EXPLANATION — SHAP MODEL INTERPRETABILITY (analysis + charts)")
+            explain_model.run()
+        except ImportError as e:
+            banner(f"SHAP explanation skipped — {e} "
+                   "(needs shap: `pip install shap`).")
 
     banner("PIPELINE COMPLETE")
 
