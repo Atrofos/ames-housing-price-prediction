@@ -82,18 +82,37 @@ neighbourhood more.
 
 ## Model interpretability (SHAP)
 
-To go beyond "what does the model predict" to "why", the trained XGBoost model is
-explained with SHAP. The summary below ranks features by how much they move
-predictions, and shows the direction of each effect (red means a high feature
-value, blue means low).
+An accurate model is only half the job. XGBoost combines hundreds of trees in
+ways no human can trace, so on its own it is a black box: it says a house is
+worth $240k but gives no reason. That is a problem for trusting it, for
+debugging it, and in many real settings (lending, insurance) for the legal
+requirement to explain an automated decision.
+
+SHAP opens the box. It borrows an idea from game theory: treat each feature as a
+player contributing to the final prediction, and fairly divide the credit among
+them. Every prediction starts at the dataset average and each feature then pushes
+it up or down to the final number, with SHAP measuring the size and direction of
+each push. Crucially those pushes always sum exactly to the prediction, so nothing
+is hidden or approximated.
+
+This is more informative than the correlations from the EDA or XGBoost's built-in
+importance, because SHAP reflects what the model *actually does* (including
+feature interactions), and it works at two levels: globally, which features drive
+the model overall, and locally, why one specific house was priced the way it was.
 
 ![SHAP summary](analysis/shap_summary_beeswarm.png)
 
-The engineered `TotalSF` feature comes out as the single most important predictor,
-just ahead of `Overall Qual`, which is direct evidence that combining the basement
-and floor areas into one feature was worthwhile. SHAP can also explain any single
-prediction, breaking the price down into the contribution of each feature, which
-is how you would justify a specific valuation to someone who asks.
+Two findings stand out. First, the features SHAP ranks as most important are
+quality and size, exactly what the exploratory analysis predicted. When an
+independent, rigorous method confirms the earlier hunch, it means the feature
+choices were sound. Second, the single most important feature is the engineered
+`TotalSF` (basement plus both floors combined), ahead of every raw column. That is
+direct evidence the feature engineering added real value rather than noise.
+
+SHAP can also explain any *individual* prediction, breaking a single house's price
+down into the contribution of each feature. This is the part nothing else can do,
+and it is what turns "the model under-priced this unusual house" into "here is
+exactly which features failed to lift it", which is a genuine diagnostic tool.
 
 ## Prediction intervals
 
