@@ -94,7 +94,7 @@ def load_model(path: str):
 def load_new_data(path: str) -> pd.DataFrame:
     """
     Reads raw input the SAME way data_cleaning.py reads the raw dataset:
-    with pandas' default NA handling. This matters and is the opposite of
+    with pandas' default NA (none) handling. This matters and is the opposite of
     what features.py/model.py do, because those read already-CLEANED files.
 
     Raw Ames data marks genuine missing values as the text 'NA' (e.g. a

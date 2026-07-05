@@ -8,7 +8,7 @@ model.
 
 This EDA focuses on the highest-signal features and the decisions they drive; a fuller analysis 
 would extend to the remaining categorical features, 
-feature interactions, and temporal effects across the 2008 downturn
+feature interactions, and temporal effects across the 2008 downturn.
 
 ## Headline result
 
