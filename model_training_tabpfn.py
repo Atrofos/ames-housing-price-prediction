@@ -1,6 +1,6 @@
 """
 model_training_tabpfn.py
----------------
+----------------
 Scores the Ames dataset with TabPFN — a tabular FOUNDATION model — as a
 "state of the art" counterpoint to the four traditional models in model.py.
 

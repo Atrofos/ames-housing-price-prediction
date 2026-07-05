@@ -1,6 +1,6 @@
 """
 predict_tabpfn.py
------------------
+------------------
 Inference for the TabPFN (foundation model) side of the project — the
 parallel of predict.py, for the parallel of model.py.
 
