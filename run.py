@@ -70,7 +70,7 @@ TEST_OUT = os.path.join(PROC, "predictions_test.csv")
 DEMO_OUT_TABPFN = os.path.join(PROC, "predictions_demo_tabpfn.csv")
 TEST_OUT_TABPFN = os.path.join(PROC, "predictions_test_tabpfn.csv")
 
-TEST_DATA_CSV = "AmesHousing_test.csv"
+TEST_DATA_CSV = os.path.join("data", "test", "AmesHousing_test.csv")
 
 
 def banner(text: str) -> None:

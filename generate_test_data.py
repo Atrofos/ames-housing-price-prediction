@@ -52,7 +52,7 @@ import pandas as pd
 # ---------------------------------------------------------------------------
 
 REFERENCE_CSV = os.path.join("data", "raw", "AmesHousing.csv")  # for schema + column order
-OUTPUT_CSV = "AmesHousing_test.csv"
+OUTPUT_CSV = os.path.join("data", "test", "AmesHousing_test.csv")
 
 SEED = 42
 
@@ -352,6 +352,7 @@ def run():
     all_houses = spread + outliers + pairs
     df = pd.DataFrame(all_houses)[ref_cols]  # enforce exact schema + order
 
+    os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
     df.to_csv(OUTPUT_CSV, index=False)
     print(f"[generate] {len(spread)} spread + {len(outliers)} outliers + "
           f"{len(pairs)} pair-houses = {len(df)} total.")

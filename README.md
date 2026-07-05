@@ -63,6 +63,36 @@ dataset.
 
 ![Neighbourhood effect](analysis/eda_neighbourhood.png)
 
+## Engineered features and encoding
+
+The raw dataset has about 80 columns. Rather than feed them in as-is, several new
+features were built to concentrate signal, and the categorical columns were
+encoded in a way that respects their meaning. The main engineered features:
+
+| Feature | How it is built | Why |
+|---|---|---|
+| `TotalSF` | Total Bsmt SF + 1st Flr SF + 2nd Flr SF | Total living space in one strong feature; ends up the top predictor |
+| `TotalBaths` | Full baths + 0.5 x half baths, all floors | One combined bathroom count, weighting half-baths sensibly |
+| `TotalPorchSF` | Sum of all porch/deck area columns | Collapses several sparse columns into one |
+| `BsmtFinSF` | Finished basement area | Separates finished from unfinished basement space |
+| `HouseAge` | Yr Sold - Year Built | Age at sale matters to price, not the raw build year |
+| `RemodAge` | Yr Sold - Year Remod/Add | Time since the last remodel |
+| `Remodelled` | Flag: has the house been remodelled | Captures a renovation cleanly |
+| `NearNegative` | Flag: next to a busy road or railway | Price-suppressing location factors from Condition 1 |
+| `NearPositive` | Flag: next to a park or greenbelt | Price-lifting location factors from Condition 1 |
+| `HasDeductions` | Flag: home has functionality deductions | Simplifies the Functional column into a single signal |
+
+**Encoding respects whether a category is ordered.** Quality grades are *ordered*
+(Excellent really is better than Good), so they are mapped to ranked integers that
+preserve that order: `{None: 0, Po: 1, Fa: 2, TA: 3, Gd: 4, Ex: 5}`. Nine quality
+columns share this same scale because the dataset's assessors used it
+consistently. Unordered categories (like `Neighborhood` or `Garage Type`) have no
+natural ranking, so they are one-hot encoded instead, which avoids implying an
+order that does not exist.
+
+Full definitions of the original columns are in the
+[Ames Housing data documentation](http://jse.amstat.org/v19n3/decock.pdf).
+
 ## Model accuracy
 
 Both models track actual prices closely, with the scatter widening at the
