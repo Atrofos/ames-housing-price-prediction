@@ -1,6 +1,6 @@
 # Ames Housing Price Prediction
 
-Predicting house sale prices from ~80 features, built as a complete end-to-end
+Predicting house sale prices from almost 80 features, built as a complete end-to-end
 pipeline: exploratory analysis, data cleaning, feature engineering, model
 training and comparison, prediction with uncertainty intervals, and a
 head-to-head study of a traditional model against a modern tabular foundation
