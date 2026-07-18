@@ -6,6 +6,8 @@ training and comparison, prediction with uncertainty intervals, and a
 head-to-head study of a traditional model against a modern tabular foundation
 model.
 
+This project demonstrates EDIT ME
+
 ## Headline result
 
 A **zero-tuning tabular foundation model (TabPFN) outperformed a fully
