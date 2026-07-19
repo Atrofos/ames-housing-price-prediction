@@ -1,18 +1,16 @@
 # Ames Housing Price Prediction
 
-Predicting house sale prices from almost 80 features, built as a complete end-to-end
-pipeline: exploratory analysis, data cleaning, feature engineering, model
-training and comparison, prediction with uncertainty intervals, and a
-head-to-head study of a traditional model against a modern tabular foundation
-model.
+This is a project that uses the AMES Housing Dataset from Iowa to develop a regresion mdoel to predict house sale prices from almost 80 feautres. A complete end-to-end pipeline is developed featuring the: exploratory analysis, data cleaning, feature engineering, model training and comparison, prediction with uncertainty intervals, and a head-to-head study of a traditional model against a modern tabular foundation model(TabPFN) to see how the modern model difers on outliers and what they think each individaul feature provides more worth to the model.
 
-This project demonstrates EDIT ME
+Each Model is tuned with 5-fold cross-validation and compared fairly on the training data to determine which is the best one out of the batch. 
 
+Both of the best models produce a 90% prediction interval. 
+
+  
 ## Headline result
 
 A **zero-tuning tabular foundation model (TabPFN) outperformed a fully
-hyperparameter-tuned XGBoost** on this dataset, at a fraction of the engineering
-effort.
+hyperparameter-tuned XGBoost** on this dataset, at a fraction of the effort required to engineer it. 
 
 | Model | Test RMSE | Test MAE | MAPE | R² | Tuning required |
 |---|---|---|---|---|---|
@@ -25,27 +23,9 @@ effort.
 *(Metrics are on a held-out 20% test split of the real data, in real dollars.)*
 
 This is consistent with TabPFN's documented strength on small tabular datasets
-(under ~10k rows), and it means the project demonstrates not just *how* to tune a
-gradient booster, but an awareness of *when tuning one is no longer the best
+(under ~10k rows), and it demonstrates an awareness of *when tuning a model one is no longer the best
 answer*.
 
-## What this project demonstrates
-
-- **Judgement, not just code.** Every feature dropped, transformed, or
-  engineered is justified by the exploratory analysis, not done by rote.
-- **A real ML workflow.** Baseline → regularised → non-linear → boosted, each
-  model tuned with 5-fold cross-validation and compared fairly on identical
-  held-out data.
-- **Deployment-minded engineering.** A prediction pipeline that reuses the exact
-  training transformations (guarding against training/serving skew) and aligns
-  new data to the model's expected columns so batch prediction never silently
-  breaks.
-- **Uncertainty quantification.** Both models produce 90% prediction intervals,
-  by two very different mechanisms, and the intervals are well-calibrated on real
-  data.
-- **A modern comparison.** A traditional gradient booster benchmarked against a
-  tabular foundation model, including how they differ on outliers and on what
-  they think individual features are worth.
 
 ## Exploratory analysis
 
@@ -67,9 +47,11 @@ dataset.
 
 ## Engineered features and encoding
 
-The raw dataset has about 80 columns. Rather than feed them in as-is, several new
-features were built to concentrate signal, and the categorical columns were
-encoded in a way that respects their meaning. The main engineered features:
+The raw dataset has about 80 columns. Rather than feed them in as they are, several new
+features were built, and the categorical columns were
+encoded in a way that respects their meaning. 
+
+The main engineered features:
 
 | Feature | How it is built | Why |
 |---|---|---|
@@ -89,8 +71,7 @@ encoded in a way that respects their meaning. The main engineered features:
 preserve that order: `{None: 0, Po: 1, Fa: 2, TA: 3, Gd: 4, Ex: 5}`. Nine quality
 columns share this same scale because the dataset's assessors used it
 consistently. Unordered categories (like `Neighborhood` or `Garage Type`) have no
-natural ranking, so they are one-hot encoded instead, which avoids implying an
-order that does not exist.
+natural ranking, so they are one-hot encoded instead.
 
 Full definitions of the original columns are in the
 [Ames Housing data documentation](http://jse.amstat.org/v19n3/decock.pdf).
@@ -114,15 +95,11 @@ neighbourhood more.
 
 ## Model interpretability (SHAP)
 
-An accurate model is only half the job. XGBoost combines hundreds of trees in
-ways no human can trace, so on its own it is a black box: it says a house is
-worth $240k but gives no reason. That is a problem for trusting it, for
+XGBoost  says a house is worth $240k but gives no reason. That is a problem for trusting it, for
 debugging it, and in many real settings (lending, insurance) for the legal
 requirement to explain an automated decision.
 
-SHAP opens the box. It borrows an idea from game theory: treat each feature as a
-player contributing to the final prediction, and fairly divide the credit among
-them. Every prediction starts at the dataset average and each feature then pushes
+Every prediction starts at the dataset average and each feature then pushes
 it up or down to the final number, with SHAP measuring the size and direction of
 each push. Crucially those pushes always sum exactly to the prediction, so nothing
 is hidden or approximated.
@@ -142,17 +119,14 @@ choices were sound. Second, the single most important feature is the engineered
 direct evidence the feature engineering added real value rather than noise.
 
 SHAP can also explain any *individual* prediction, breaking a single house's price
-down into the contribution of each feature. This is the part nothing else can do,
-and it is what turns "the model under-priced this unusual house" into "here is
-exactly which features failed to lift it", which is a genuine diagnostic tool.
+down into the contribution of each feature to see exactly which features succeeded/failed to lift it.
 
 ## Prediction intervals
 
 Predictions come with a 90% interval, not just a point estimate, so the model can
 signal *how confident it is*. On real data the intervals are well-calibrated:
 **89% of actual prices fell within the 90% interval**. The interval also widens
-for unusual houses (e.g. a mansion with a pool, far outside the training data),
-which is exactly the behaviour you want.
+for unusual houses (e.g. a mansion with a pool, far outside the training data).
 
 The two models produce intervals by completely different routes, which is part of
 the comparison:
@@ -164,7 +138,7 @@ the comparison:
 
 ## Results and findings
 
-The main takeaways from the project, in one place:
+The main takeaways from the project:
 
 **A zero-tuning foundation model beat a fully-tuned gradient booster.** TabPFN
 reached $20,806 RMSE on the held-out test set against XGBoost's $22,869, roughly
@@ -229,9 +203,7 @@ across the 2006 to 2010 sale years.
 ```
 
 The pipeline is split into small, single-purpose files that each do one stage and
-hand off a saved artifact to the next. Scripts are used for the pipeline (they are
-reproducible and automatable); a notebook is used for exploration (where its
-interleaving of code, charts, and narrative fits best).
+hand off a saved artifact to the next.
 
 ## How to run it
 
