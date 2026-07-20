@@ -1,6 +1,6 @@
 # Ames Housing Price Prediction
 
-This is a project that uses the AMES Housing Dataset from Iowa to develop a regresion mdoel to predict house sale prices from almost 80 feautres. A complete end-to-end pipeline is developed featuring the: exploratory analysis, data cleaning, feature engineering, model training and comparison, prediction with uncertainty intervals, and a head-to-head study of a traditional model against a modern tabular foundation model(TabPFN) to see how the modern model difers on outliers and what they think each individaul feature provides more worth to the model.
+This is a project that uses the AMES Housing Dataset from Iowa to develop several Regression Models to predict house sale prices from almost 80 feautres. A complete end-to-end pipeline is developed featuring the: exploratory analysis, data cleaning, feature engineering, model training and comparison, prediction with uncertainty intervals, and a head-to-head study of a traditional model against a modern tabular foundation model(TabPFN) to see how the modern model difers on outliers and what they think each individaul feature provides more worth to the model.
 
 Each Model is tuned with 5-fold cross-validation and compared fairly on the training data to determine which is the best one out of the batch. 
 
